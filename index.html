@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>澄海周边咖啡店转盘</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            color: #fff;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9em;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 10px 0;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+        }
+        .card:active { transform: scale(0.98); }
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-desc {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.75em;
+            margin-top: 10px;
+        }
+        .tag-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #fff;
+        }
+        .tag-purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        .emoji { font-size: 1.5em; }
+        .footer {
+            margin-top: 40px;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.8em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>☕ 澄海周边咖啡店转盘</h1>
+    <p class="subtitle">点击卡片选择距离范围</p>
+    
+    <a href="near.html" class="card">
+        <div class="card-title">
+            <span class="emoji">🎯</span>
+            30-70km 独立咖啡店
+        </div>
+        <div class="card-desc">
+            汕头 · 潮州 · 揭阳<br>
+            15家独立精品咖啡馆，无连锁品牌
+        </div>
+        <span class="tag tag-green">近距离推荐</span>
+    </a>
+    
+    <a href="far.html" class="card">
+        <div class="card-title">
+            <span class="emoji">🏖️</span>
+            50-100km 热门咖啡店
+        </div>
+        <div class="card-desc">
+            汕尾 · 梅州 · 福建<br>
+            12家热门咖啡店，含海景网红店
+        </div>
+        <span class="tag tag-purple">远行探索</span>
+    </a>
+    
+    <p class="footer">以澄海区汽车总站为中心</p>
+</body>
+</html>
