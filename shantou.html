@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>汕头金平龙湖区咖啡店转盘 TOP20</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            min-height: 100vh;
+            padding: 15px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .container { max-width: 100%; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 1.6em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.95);
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .wheel-section {
+            background: rgba(255,255,255,0.98);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .wheel-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        @media (min-width: 375px) {
+            .wheel-container { width: 320px; height: 320px; }
+        }
+        @media (min-width: 414px) {
+            .wheel-container { width: 350px; height: 350px; }
+        }
+        #wheel-svg {
+            width: 100%;
+            height: 100%;
+            transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+            -webkit-transition: -webkit-transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .pointer {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            -webkit-transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 35px solid #ff4757;
+            z-index: 20;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .wheel-center {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .spin-btn {
+            display: block;
+            width: 80%;
+            max-width: 200px;
+            margin: 20px auto 0;
+            padding: 14px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+        .spin-btn:active {
+            transform: scale(0.98);
+            -webkit-transform: scale(0.98);
+        }
+        .result {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 12px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .result-text { font-size: 1.1em; color: #333; font-weight: bold; }
+        .result-info { font-size: 0.85em; color: #666; margin-top: 4px; line-height: 1.4; }
+        
+        .list-section {
+            background: rgba(255,255,255,0.98);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .list-title { color: #333; margin-bottom: 12px; font-size: 1.1em; font-weight: 600; }
+        .cafe-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #ff6b6b;
+        }
+        .cafe-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .cafe-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        .cafe-rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: #fff;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .cafe-name { 
+            font-weight: 600; 
+            color: #333; 
+            font-size: 0.95em;
+            flex: 1;
+        }
+        .region-tag { 
+            display: inline-block; 
+            padding: 1px 5px; 
+            border-radius: 3px; 
+            font-size: 0.65em; 
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+        .region-jinping { background: #e3f2fd; color: #1976d2; }
+        .region-longhu { background: #fce4ec; color: #c2185b; }
+        .score { 
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); 
+            color: #fff; 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 0.75em; 
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+        .cafe-info { 
+            color: #666; 
+            font-size: 0.8em; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+        .cafe-info span { 
+            background: rgba(255, 107, 107, 0.1); 
+            padding: 2px 6px; 
+            border-radius: 6px; 
+        }
+        .cafe-desc { 
+            color: #888; 
+            font-size: 0.75em; 
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>☕ 汕头咖啡店转盘</h1>
+        <p class="subtitle">金平区 · 龙湖区 · TOP20</p>
+        
+        <div class="wheel-section">
+            <div class="wheel-title">🎯 点击按钮随机挑选</div>
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <svg id="wheel-svg" viewBox="0 0 400 400">
+                    <g id="wheel-group" transform="translate(200,200)"></g>
+                </svg>
+                <div class="wheel-center">☕</div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()">🎲 开始旋转</button>
+            <div class="result" id="result">
+                <div class="result-text">点击上方按钮开始</div>
+            </div>
+        </div>
+        
+        <div class="list-section">
+            <div class="list-title">🏆 汕头咖啡店 TOP20</div>
+            <div id="cafeList"></div>
+        </div>
+    </div>
+
+    <script>
+        const cafes = [
+            { name: "CafeOnWarm", region: "金平", regionClass: "region-jinping", rating: 4.9, feature: "服务天花板", desc: "小公园店，汕头咖啡届海底捞，月销量最高" },
+            { name: "松松咖啡", region: "龙湖", regionClass: "region-longhu", rating: 4.9, feature: "24小时", desc: "迎宾路，1300㎡超大空间，年轻人地标" },
+            { name: "GOTOCOFFEE", region: "龙湖", regionClass: "region-longhu", rating: 4.8, feature: "冠军店", desc: "碧霞庄，世界咖啡师大赛中国区亚军" },
+            { name: "燕谷咖啡", region: "金平", regionClass: "region-jinping", rating: 4.8, feature: "社区温馨", desc: "公信路，15元小杯拿铁，可颂三明治" },
+            { name: "sogalab", region: "金平", regionClass: "region-jinping", rating: 4.8, feature: "复古怀旧", desc: "杏园街，时光隧道，台风冷萃" },
+            { name: "WaterCafe", region: "龙湖", regionClass: "region-longhu", rating: 4.7, feature: "平价日常", desc: "丹霞庄，手冲15元，自带杯减5元" },
+            { name: "NAPCAFE", region: "龙湖", regionClass: "region-longhu", rating: 4.7, feature: "Supreme", desc: "丹阳庄，满墙Supreme收藏，早C晚A" },
+            { name: "野木CAFE", region: "金平", regionClass: "region-jinping", rating: 4.6, feature: "精品手冲", desc: "滨港园，世界各地精品豆" },
+            { name: "WCOFFEE", region: "龙湖", regionClass: "region-longhu", rating: 4.6, feature: "莫兰迪棕", desc: "金涛庄，斑斓椰奶拿铁，复古美式" },
+            { name: "顽石咖啡", region: "龙湖", regionClass: "region-longhu", rating: 4.5, feature: "工业禅意", desc: "丹阳庄，水泥灰极简，枯木流沙" },
+            { name: "啡尝湿", region: "金平", regionClass: "region-jinping", rating: 4.5, feature: "自烘焙", desc: "二马路，巷子深处，咖啡+威士忌" },
+            { name: "Northbridge", region: "龙湖", regionClass: "region-longhu", rating: 4.4, feature: "韩系小屋", desc: "丹阳街，独栋白色小屋，日系感" },
+            { name: "PARKMOOD", region: "金平", regionClass: "region-jinping", rating: 4.4, feature: "游园叹啡", desc: "广厦新城，墨绿美式复古，黑胶唱片" },
+            { name: "乌托邦", region: "金平", regionClass: "region-jinping", rating: 4.3, feature: "自家烘焙", desc: "中山路LOFT街区，继续烘焙室" },
+            { name: "塔拉苏", region: "金平", regionClass: "region-jinping", rating: 4.3, feature: "北欧风", desc: "嘉泰雅园，简约居家，杯测分享会" },
+            { name: "CHILLCOFFEE", region: "龙湖", regionClass: "region-longhu", rating: 4.2, feature: "克莱因蓝", desc: "金砂路，汕头蓝鼻祖，清爽百香果凤梨" },
+            { name: "24Hcolor", region: "金平", regionClass: "region-jinping", rating: 4.2, feature: "咖啡民宿", desc: "外马路，玻璃幕墙，民国建筑群" },
+            { name: "洪浪咖啡", region: "金平", regionClass: "region-jinping", rating: 4.1, feature: "老市区", desc: "共和路，咖啡+肠粉，菜市场里" },
+            { name: "浮遊", region: "金平", regionClass: "region-jinping", rating: 4.1, feature: "日式面包", desc: "金新北路，白色极简，面包特调" },
+            { name: "Masu屿见", region: "龙湖", regionClass: "region-longhu", rating: 4.0, feature: "妈屿岛", desc: "妈屿岛海边路，蓝白海岛风，落日最佳" }
+        ];
+
+        const colors = [
+            '#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd',
+            '#00d2d3', '#ff9f43', '#ee5a24', '#009432', '#0652dd', '#9980fa',
+            '#f79f1f', '#a3cb38', '#1289a7', '#d980fa', '#b33939', '#cd6133',
+            '#84817a', '#227093'
+        ];
+
+        function createWheel() {
+            const group = document.getElementById('wheel-group');
+            const segmentAngle = 360 / cafes.length;
+            const radius = 180;
+
+            cafes.forEach((cafe, index) => {
+                const startAngle = index * segmentAngle;
+                const endAngle = (index + 1) * segmentAngle;
+                
+                const startRad = (startAngle - 90) * Math.PI / 180;
+                const endRad = (endAngle - 90) * Math.PI / 180;
+                
+                const x1 = Math.cos(startRad) * radius;
+                const y1 = Math.sin(startRad) * radius;
+                const x2 = Math.cos(endRad) * radius;
+                const y2 = Math.sin(endRad) * radius;
+                
+                const largeArc = segmentAngle > 180 ? 1 : 0;
+                
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M 0 0 L ' + x1 + ' ' + y1 + ' A ' + radius + ' ' + radius + ' 0 ' + largeArc + ' 1 ' + x2 + ' ' + y2 + ' Z');
+                path.setAttribute('fill', colors[index]);
+                path.setAttribute('stroke', '#fff');
+                path.setAttribute('stroke-width', '2');
+                group.appendChild(path);
+                
+                // 计算扇形中心角度
+                const centerAngle = (startAngle + endAngle) / 2 - 90;
+                const centerRad = centerAngle * Math.PI / 180;
+                const textRadius = radius * 0.68;
+                const textX = Math.cos(centerRad) * textRadius;
+                const textY = Math.sin(centerRad) * textRadius;
+                
+                // 创建竖排文字组
+                const textGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                textGroup.setAttribute('transform', 'translate(' + textX + ', ' + textY + ') rotate(' + (centerAngle + 90) + ')');
+                
+                // 每个字单独显示，竖排
+                const chars = cafe.name.split('');
+                const fontSize = chars.length > 4 ? 10 : 12;
+                const lineHeight = fontSize + 2;
+                const totalHeight = chars.length * lineHeight;
+                const startY = -(totalHeight - lineHeight) / 2;
+                
+                chars.forEach((char, i) => {
+                    const charText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    charText.setAttribute('x', 0);
+                    charText.setAttribute('y', startY + i * lineHeight);
+                    charText.setAttribute('text-anchor', 'middle');
+                    charText.setAttribute('dominant-baseline', 'middle');
+                    charText.setAttribute('fill', '#fff');
+                    charText.setAttribute('font-size', fontSize);
+                    charText.setAttribute('font-weight', 'bold');
+                    charText.style.textShadow = '1px 1px 2px rgba(0,0,0,0.8)';
+                    charText.textContent = char;
+                    textGroup.appendChild(charText);
+                });
+                
+                group.appendChild(textGroup);
+            });
+        }
+
+        function createList() {
+            const list = document.getElementById('cafeList');
+            cafes.forEach((cafe, index) => {
+                const item = document.createElement('div');
+                item.className = 'cafe-item';
+                item.innerHTML = 
+                    '<div class="cafe-header">' +
+                        '<div class="cafe-left">' +
+                            '<span class="cafe-rank">' + (index + 1) + '</span>' +
+                            '<span class="cafe-name">' + cafe.name + '<span class="region-tag ' + cafe.regionClass + '">' + cafe.region + '</span></span>' +
+                        '</div>' +
+                        '<span class="score">' + cafe.rating + '分</span>' +
+                    '</div>' +
+                    '<div class="cafe-info"><span>🎯 ' + cafe.feature + '</span></div>' +
+                    '<div class="cafe-desc">' + cafe.desc + '</div>';
+                list.appendChild(item);
+            });
+        }
+
+        let isSpinning = false;
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            var wheel = document.getElementById('wheel-svg');
+            var result = document.getElementById('result');
+            result.innerHTML = '<div class="result-text">🎲 转盘旋转中...</div>';
+            
+            // 随机选择一个
+            var randomIndex = Math.floor(Math.random() * cafes.length);
+            var segmentAngle = 360 / cafes.length;
+            
+            // 计算目标角度：让选中项的扇形中心对准指针
+            var targetAngle = randomIndex * segmentAngle + segmentAngle / 2;
+            
+            // 多转5圈后停在正确位置
+            var totalRotation = 360 * 5 + (360 - targetAngle);
+            
+            wheel.style.transform = 'rotate(' + totalRotation + 'deg)';
+            wheel.style.webkitTransform = 'rotate(' + totalRotation + 'deg)';
+            
+            setTimeout(function() {
+                var selected = cafes[randomIndex];
+                result.innerHTML = '<div class="result-text">🎉 ' + selected.name + '</div><div class="result-info">' + selected.region + '区 · ' + selected.rating + '分 · ' + selected.feature + '<br>' + selected.desc + '</div>';
+                isSpinning = false;
+            }, 4000);
+        }
+
+        createWheel();
+        createList();
+    </script>
+</body>
+</html>
