@@ -24,14 +24,14 @@
             text-align: center;
             color: rgba(255,255,255,0.9);
             font-size: 0.9em;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
         .card {
-            background: rgba(255,255,255,0.98);
-            border-radius: 16px;
-            padding: 20px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             text-decoration: none;
             color: #333;
             display: block;
@@ -65,9 +65,13 @@
         }
         .tag {
             padding: 4px 10px;
-            border-radius: 12px;
+            border-radius: 15px;
             font-size: 0.75em;
             font-weight: 500;
+        }
+        .tag-orange {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: #fff;
         }
         .tag-green {
             background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
@@ -77,22 +81,22 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
         }
-        .tag-orange {
-            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+        .tag-pink {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: #fff;
         }
         .footer {
             text-align: center;
             color: rgba(255,255,255,0.7);
             font-size: 0.8em;
-            margin-top: 30px;
+            margin-top: 40px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>☕ 咖啡店转盘大全</h1>
-        <p class="subtitle">汕头及周边地区精选咖啡店</p>
+        <p class="subtitle">发现身边的好咖啡</p>
         
         <a href="shantou.html" class="card">
             <div class="card-header">
@@ -109,6 +113,21 @@
             </div>
         </a>
         
+        <a href="chenghai-30-60.html" class="card">
+            <div class="card-header">
+                <span class="emoji">🛵</span>
+                <span class="card-title">澄海周边 30-60km</span>
+            </div>
+            <div class="card-desc">
+                避开禁摩区 · 潮州·揭阳·濠江·潮阳<br>
+                12家咖啡店，走国道/省道，含实际导航距离
+            </div>
+            <div class="tags">
+                <span class="tag tag-pink">踢桃咖啡</span>
+                <span class="tag tag-pink">丁满咖啡</span>
+            </div>
+        </a>
+        
         <a href="chenghai-near.html" class="card">
             <div class="card-header">
                 <span class="emoji">🎯</span>
@@ -119,8 +138,8 @@
                 15家独立精品咖啡馆（无连锁）
             </div>
             <div class="tags">
-                <span class="tag tag-green">踢桃咖啡</span>
                 <span class="tag tag-green">燕谷咖啡</span>
+                <span class="tag tag-green">sogalab</span>
             </div>
         </a>
         
