@@ -110,19 +110,16 @@
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // 绘制文字 - 垂直排列
                 ctx.save();
                 ctx.rotate(startAngle + segmentAngle / 2);
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 
-                // 垂直文字 - 每个字符从内到外沿径向排列
                 const text = cafes[i].name;
                 const charSpacing = 20;
                 const fontSize = 18;
                 ctx.font = 'bold ' + fontSize + 'px Arial';
                 
-                // 从内到外排列，整体居中于扇形径向空间
                 const innerEdge = radius * 0.35;
                 const outerEdge = radius * 0.88;
                 const maxSpan = outerEdge - innerEdge;
@@ -133,7 +130,6 @@
                     ctx.save();
                     ctx.translate(r, 0);
                     ctx.rotate(-Math.PI / 2);
-                    // 先画黑色描边提高对比度
                     ctx.strokeStyle = 'rgba(0,0,0,0.9)';
                     ctx.lineWidth = 6;
                     ctx.fillStyle = '#fff';
@@ -166,34 +162,39 @@
             const result = document.getElementById('result');
             result.innerHTML = '<div class="result-text">🎲 转盘旋转中...</div>';
             
-            const randomIndex = Math.floor(Math.random() * cafes.length);
-            const segmentAngle = 360 / cafes.length;
-            const extraSpins = 5 + Math.floor(Math.random() * 4); // 随机5-8圈
-            // 目标角度：让选中的扇形中心对准指针（12点钟方向）
-            // 加上一个随机偏移（±35%扇形角度），让指针停在扇形中间区域
-            const randomOffset = (Math.random() - 0.5) * segmentAngle * 0.7;
-            const targetRotation = -(randomIndex * segmentAngle + segmentAngle / 2 + randomOffset) - extraSpins * 360;
+            const n = cafes.length;
+            const randomIndex = Math.floor(Math.random() * n);
+            const segmentAngle = 360 / n;
+            const extraSpins = 5 + Math.floor(Math.random() * 4);
+            
+            const randomOffset = (Math.random() - 0.5) * segmentAngle * 0.4;
+            
+            const currentAngle = ((-currentRotation % 360) + 360) % 360;
+            const targetAngle = (randomIndex + 0.5) * segmentAngle + randomOffset;
+            let delta = targetAngle - currentAngle;
+            if (delta < 0) delta += 360;
+            delta += extraSpins * 360;
+            
+            const startRotation = currentRotation;
+            const totalDelta = -delta;
+            
+            const duration = 2000 + (delta / 360) * 400;
             
             let start = null;
-            const duration = 5000;
-            const startRotation = currentRotation;
-
+            
             function animate(timestamp) {
                 if (!start) start = timestamp;
                 const progress = Math.min((timestamp - start) / duration, 1);
-                const easeProgress = 1 - Math.pow(1 - progress, 4);
-                currentRotation = startRotation + targetRotation * easeProgress;
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                currentRotation = startRotation + totalDelta * easeProgress;
                 drawWheel(currentRotation * Math.PI / 180);
                 
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    // 根据实际停止角度计算指针指向的扇形（指针在12点钟方向）
-                    // 使用相同的边界逻辑：偏移0.5度避免边界问题
-                    const normalizedRotation = ((currentRotation % 360) + 360) % 360;
-                    const angleFromTop = (360 - normalizedRotation + segmentAngle / 2) % 360;
-                    const selectedIndex = Math.floor(angleFromTop / segmentAngle) % cafes.length;
-                    const selected = cafes[selectedIndex];
+                    currentRotation = startRotation + totalDelta;
+                    
+                    const selected = cafes[randomIndex];
                     const newTag = selected.isNew ? ' 🆕' : '';
                     result.innerHTML = '<div class="result-text">🎉 ' + selected.name + newTag + '</div><div class="result-info">' + selected.region + ' · ' + selected.distance + ' · ' + selected.rating + '⭐<br>⏰ ' + selected.hours + '<br>' + selected.desc + '</div>';
                     isSpinning = false;
