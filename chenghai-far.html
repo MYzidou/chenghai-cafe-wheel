@@ -168,10 +168,14 @@
             
             const randomIndex = Math.floor(Math.random() * cafes.length);
             const segmentAngle = 360 / cafes.length;
-            const targetRotation = 360 * 5 + (360 - (randomIndex * segmentAngle + segmentAngle / 2));
+            const extraSpins = 5 + Math.floor(Math.random() * 4); // 随机5-8圈
+            // 目标角度：让选中的扇形中心对准指针（12点钟方向）
+            // 加上一个随机偏移（±35%扇形角度），让指针停在扇形中间区域
+            const randomOffset = (Math.random() - 0.5) * segmentAngle * 0.7;
+            const targetRotation = -(randomIndex * segmentAngle + segmentAngle / 2 + randomOffset) - extraSpins * 360;
             
             let start = null;
-            const duration = 4000;
+            const duration = 5000;
             const startRotation = currentRotation;
 
             function animate(timestamp) {
@@ -184,7 +188,12 @@
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    const selected = cafes[randomIndex];
+                    // 根据实际停止角度计算指针指向的扇形（指针在12点钟方向）
+                    // 使用相同的边界逻辑：偏移0.5度避免边界问题
+                    const normalizedRotation = ((currentRotation % 360) + 360) % 360;
+                    const angleFromTop = (360 - normalizedRotation + segmentAngle / 2) % 360;
+                    const selectedIndex = Math.floor(angleFromTop / segmentAngle) % cafes.length;
+                    const selected = cafes[selectedIndex];
                     const newTag = selected.isNew ? ' 🆕' : '';
                     result.innerHTML = '<div class="result-text">🎉 ' + selected.name + newTag + '</div><div class="result-info">' + selected.region + ' · ' + selected.distance + ' · ' + selected.rating + '⭐<br>⏰ ' + selected.hours + '<br>' + selected.desc + '</div>';
                     isSpinning = false;
