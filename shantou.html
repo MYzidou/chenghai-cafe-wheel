@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎡 汕头金平/龙湖咖啡店转盘 TOP20（2026 年 4 月 18 日更新版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); min-height: 100vh; padding: 15px; }
+        .container { max-width: 100%; margin: 0 auto; }
+        h1 { text-align: center; color: #fff; font-size: 1.4em; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.9); font-size: 0.85em; margin-bottom: 10px; }
+        .notice { background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 15px; color: #fff; font-size: 0.75em; text-align: center; }
+        .back-btn { display: inline-block; color: #fff; text-decoration: none; margin-bottom: 10px; font-size: 0.9em; }
+        .wheel-section { background: rgba(255,255,255,0.98); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .wheel-title { text-align: center; margin-bottom: 10px; color: #333; font-size: 1.1em; font-weight: 700; }
+        .wheel-container { position: relative; width: 100%; max-width: 380px; aspect-ratio: 1; margin: 0 auto; }
+        #wheel-canvas { width: 100%; height: 100%; }
+        .pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ff4757; z-index: 20; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        .wheel-center { position: absolute; width: 50px; height: 50px; background: #fff; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .spin-btn { display: block; width: 80%; max-width: 200px; margin: 20px auto 0; padding: 14px 20px; font-size: 1.1em; font-weight: bold; color: #fff; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4); }
+        .spin-btn:active { transform: scale(0.98); }
+        .result { text-align: center; margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 12px; min-height: 80px; }
+        .result-text { font-size: 1.1em; color: #333; font-weight: bold; }
+        .result-info { font-size: 0.85em; color: #666; margin-top: 4px; line-height: 1.5; }
+        .list-section { background: rgba(255,255,255,0.98); border-radius: 16px; padding: 15px; margin-top: 15px; }
+        .list-title { color: #333; margin-bottom: 12px; font-size: 1.1em; font-weight: 700; }
+        .cafe-item { background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 3px solid #ff9a9e; }
+        .cafe-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .cafe-name { font-weight: 700; color: #333; }
+        .new-tag { background: #ff4757; color: #fff; font-size: 0.6em; padding: 1px 4px; border-radius: 3px; margin-left: 4px; }
+        .score { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; }
+        .cafe-info { color: #666; font-size: 0.8em; margin-top: 4px; }
+        .cafe-info span { background: rgba(255, 154, 158, 0.1); padding: 2px 6px; border-radius: 6px; margin-right: 5px; display: inline-block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-btn">⬅ 返回</a>
+        <h1>🎡 汕头金平/龙湖 TOP20</h1>
+        <p class="subtitle">汕头市区精品咖啡馆 · 高德数据验证中 · 2026 年 4 月 18 日</p>
+        <div class="notice">📍 金平区 + 龙湖区 | ✅ 已验证营业状态 | 🆕 新增热门店</div>
+        
+        <div class="wheel-section">
+            <div class="wheel-title">🎯 点击按钮随机挑选</div>
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <canvas id="wheel-canvas" width="760" height="760"></canvas>
+                <div class="wheel-center">☕</div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()">🎲 开始旋转</button>
+            <div class="result" id="result"><div class="result-text">点击上方按钮开始</div></div>
+        </div>
+        
+        <div class="list-section">
+            <div class="list-title">🏆 TOP20 咖啡店精选（高德数据验证）</div>
+            <div id="cafeList"></div>
+        </div>
+    </div>
+
+    <script>
+        const cafes = [
+            { name: "松松咖啡", region: "龙湖", distance: "~20km", rating: 4.5, feature: "24 小时营业", hours: "24 小时", desc: "嵩山路南 20 号天澜国际大厦", isNew: false },
+            { name: "CafeOnWarm", region: "龙湖", distance: "~20km", rating: 4.6, feature: "潮汕橄榄", hours: "08:00-22:00", desc: "小公园永平路14号", isNew: false },
+            { name: "Oasis coffee 燕谷咖啡", region: "龙湖", distance: "~20km", rating: 4.8, feature: "社区温馨", hours: "09:00-22:00", desc: "公信路桂园 47 栋 109 铺面", isNew: false },
+            { name: "WATER CAFE", region: "龙湖", distance: "~20km", rating: 4.7, feature: "平价精品", hours: "09:00-21:00", desc: "丹霞庄中区 14 栋 11 号（另有广厦店、万象东店）", isNew: false },
+            { name: "NAP COFFEE", region: "龙湖", distance: "~20km", rating: 4.6, feature: "Supreme", hours: "10:00-22:00", desc: "汕充路与泰山南路辅路交叉口西北", isNew: false },
+            { name: "ShotCafe", region: "龙湖", distance: "~20km", rating: 4.3, feature: "社区咖啡", hours: "09:00-22:00", desc: "丹霞中一街与丹霞中街交叉口西40米", isNew: true },
+            { name: "塔拉苏咖啡", region: "龙湖", distance: "~20km", rating: 4.5, feature: "国际精品", hours: "10:00-22:00", desc: "丹阳庄西三区8-11幢116号房之一", isNew: false },
+            { name: "% Arabica", region: "龙湖", distance: "~20km", rating: 4.4, feature: "万象城", hours: "10:00-22:00", desc: "金环南路与长平路交界处东北处汕头万象城", isNew: true },
+            { name: "潮济堂咖啡馆", region: "龙湖", distance: "~20km", rating: 4.5, feature: "华银国际", hours: "10:00-22:00", desc: "长平路华银国际大厦122号铺", isNew: true },
+            { name: "顽石咖啡 stone", region: "龙湖", distance: "~20km", rating: 4.5, feature: "丹霞庄", hours: "10:00-22:00", desc: "丹苑南街丹霞庄西区36栋102号", isNew: true },
+            { name: "CafeING 正在咖啡", region: "龙湖", distance: "~20km", rating: 4.6, feature: "金晖庄", hours: "10:00-22:00", desc: "金晖中街 1 号", isNew: true },
+            { name: "道兴咖啡", region: "龙湖", distance: "~20km", rating: 4.4, feature: "万象润街", hours: "10:00-22:00", desc: "长平路 95 号华润大厦商业裙楼 167 号", isNew: true },
+            { name: "拉环咖啡 Pull-Tab", region: "龙湖", distance: "~20km", rating: 4.1, feature: "珠城路", hours: "10:00-22:00", desc: "珠城路领荟湾 2 栋 202 商铺", isNew: true },
+            { name: "MONSOON COFFEE", region: "金平", distance: "~20km", rating: 4.4, feature: "东方园", hours: "10:00-22:00", desc: "公信路1号东方园南区", isNew: true },
+            { name: "吾北咖啡·面包", region: "澄海", distance: "~15km", rating: 4.4, feature: "奥飞广场", hours: "10:00-22:00", desc: "澄华街道文冠路天韵雅苑 1 幢", isNew: true },
+            { name: "EUREKA CAFE 发现咖啡", region: "澄海", distance: "~15km", rating: 4.3, feature: "裕源写字楼", hours: "10:00-22:00", desc: "裕源写字楼南门旁", isNew: true },
+            { name: "歇夏咖啡", region: "澄海", distance: "~15km", rating: 4.2, feature: "世聪大厦", hours: "10:00-22:00", desc: "澄华街道宁川东路世聪大厦 A5", isNew: true },
+            { name: "INK COFFEE 墨咖啡", region: "澄海", distance: "~15km", rating: 4.2, feature: "永裕大楼", hours: "10:00-22:00", desc: "永裕大楼西门旁", isNew: true },
+            { name: "豆米咖啡", region: "澄海", distance: "~15km", rating: 4.4, feature: "宜嘉名都", hours: "10:00-22:00", desc: "宜嘉名都西北门西南 80 米", isNew: true },
+            { name: "南澳岛摆烂咖啡车", region: "南澳", distance: "~50km", rating: 4.5, feature: "猫咖车咖", hours: "09:00-23:30", desc: "336省道与云盖寺路交叉口东300米", isNew: false }
+        ];
+
+        const colors = ['#ff9a9e', '#fecfef', '#ffecd2', '#fcb69f', '#f093fb', '#f5576c', '#a8edea', '#fed6e3', '#d299c2', '#fef9d7', '#e2c0eb', '#c2e9fb', '#a1c4fd', '#fbc2eb', '#ff9ff3', '#54a0ff', '#5f27cd', '#4facfe', '#00f2fe', '#43e97b'];
+        cafes.sort((a, b) => b.rating - a.rating);
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel(rotation) {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 20;
+            const segmentAngle = (2 * Math.PI) / cafes.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+
+            for (let i = 0; i < cafes.length; i++) {
+                const startAngle = i * segmentAngle - Math.PI / 2;
+                const endAngle = (i + 1) * segmentAngle - Math.PI / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.rotate(startAngle + segmentAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // 垂直文字 - 每个字符从内到外沿径向排列
+                const text = cafes[i].name;
+                const charSpacing = 20;
+                const fontSize = 18;
+                ctx.font = 'bold ' + fontSize + 'px Arial';
+                
+                // 从内到外排列，整体居中于扇形径向空间
+                const innerEdge = radius * 0.35;
+                const outerEdge = radius * 0.88;
+                const maxSpan = outerEdge - innerEdge;
+                const actualSpacing = text.length > 1 ? Math.min(charSpacing, maxSpan / (text.length - 1)) : charSpacing;
+                const startRadius = innerEdge + (maxSpan - (text.length - 1) * actualSpacing) / 2;
+                for (let j = 0; j < text.length; j++) {
+                    const r = startRadius + j * actualSpacing;
+                    ctx.save();
+                    ctx.translate(r, 0);
+                    ctx.rotate(-Math.PI / 2);
+                    // 先画黑色描边提高对比度
+                    ctx.strokeStyle = 'rgba(0,0,0,0.9)';
+                    ctx.lineWidth = 6;
+                    ctx.fillStyle = '#fff';
+                    ctx.shadowColor = 'rgba(0,0,0,1)';
+                    ctx.shadowBlur = 0;
+                    ctx.strokeText(text[j], 0, 0);
+                    ctx.fillText(text[j], 0, 0);
+                    ctx.restore();
+                }
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        function createList() {
+            const list = document.getElementById('cafeList');
+            cafes.forEach((cafe, index) => {
+                const item = document.createElement('div');
+                item.className = 'cafe-item';
+                const newTag = cafe.isNew ? '<span class="new-tag">NEW</span>' : '';
+                item.innerHTML = '<div class="cafe-header"><span class="cafe-name">' + (index + 1) + '. ' + cafe.name + newTag + ' <span style="font-size:0.8em;color:#666">' + cafe.region + '</span></span><span class="score">' + cafe.rating + '⭐</span></div><div class="cafe-info"><span>📍 ' + cafe.distance + '</span><span>⏰ ' + cafe.hours + '</span><span>🎯 ' + cafe.feature + '</span></div><div style="color:#888;font-size:0.75em;margin-top:4px;">' + cafe.desc + '</div>';
+                list.appendChild(item);
+            });
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            const result = document.getElementById('result');
+            result.innerHTML = '<div class="result-text">🎲 转盘旋转中...</div>';
+            
+            const randomIndex = Math.floor(Math.random() * cafes.length);
+            const segmentAngle = 360 / cafes.length;
+            const targetRotation = 360 * 5 + (360 - (randomIndex * segmentAngle + segmentAngle / 2));
+            
+            let start = null;
+            const duration = 4000;
+            const startRotation = currentRotation;
+
+            function animate(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                currentRotation = startRotation + targetRotation * easeProgress;
+                drawWheel(currentRotation * Math.PI / 180);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    const selected = cafes[randomIndex];
+                    const newTag = selected.isNew ? ' 🆕' : '';
+                    result.innerHTML = '<div class="result-text">🎉 ' + selected.name + newTag + '</div><div class="result-info">' + selected.region + ' · ' + selected.distance + ' · ' + selected.rating + '⭐<br>⏰ ' + selected.hours + '<br>' + selected.desc + '</div>';
+                    isSpinning = false;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        drawWheel(0);
+        createList();
+    </script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎡 澄海周边 30-70km 独立咖啡店转盘（2026 年 4 月 18 日高德验证版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); min-height: 100vh; padding: 15px; }
+        .container { max-width: 100%; margin: 0 auto; }
+        h1 { text-align: center; color: #fff; font-size: 1.4em; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.9); font-size: 0.85em; margin-bottom: 10px; }
+        .notice { background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 15px; color: #fff; font-size: 0.75em; text-align: center; }
+        .back-btn { display: inline-block; color: #fff; text-decoration: none; margin-bottom: 10px; font-size: 0.9em; }
+        .wheel-section { background: rgba(255,255,255,0.98); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .wheel-title { text-align: center; margin-bottom: 10px; color: #333; font-size: 1.1em; font-weight: 600; }
+        .wheel-container { position: relative; width: 100%; max-width: 380px; aspect-ratio: 1; margin: 0 auto; }
+        #wheel-canvas { width: 100%; height: 100%; }
+        .pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ff4757; z-index: 20; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        .wheel-center { position: absolute; width: 50px; height: 50px; background: #fff; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .spin-btn { display: block; width: 80%; max-width: 200px; margin: 20px auto 0; padding: 14px 20px; font-size: 1.1em; font-weight: bold; color: #fff; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4); }
+        .spin-btn:active { transform: scale(0.98); }
+        .result { text-align: center; margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 12px; min-height: 80px; }
+        .result-text { font-size: 1.1em; color: #333; font-weight: bold; }
+        .result-info { font-size: 0.85em; color: #666; margin-top: 4px; line-height: 1.5; }
+        .list-section { background: rgba(255,255,255,0.98); border-radius: 16px; padding: 15px; margin-top: 15px; }
+        .list-title { color: #333; margin-bottom: 12px; font-size: 1.1em; font-weight: 700; }
+        .cafe-item { background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 3px solid #11998e; }
+        .cafe-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .cafe-name { font-weight: 700; color: #333; }
+        .new-tag { background: #ff4757; color: #fff; font-size: 0.6em; padding: 1px 4px; border-radius: 3px; margin-left: 4px; }
+        .score { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; }
+        .cafe-info { color: #666; font-size: 0.8em; margin-top: 4px; }
+        .cafe-info span { background: rgba(17, 153, 142, 0.1); padding: 2px 6px; border-radius: 6px; margin-right: 5px; display: inline-block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-btn">⬅ 返回</a>
+        <h1>🎡 澄海周边独立咖啡馆</h1>
+        <p class="subtitle">30-70 公里 · 独立精品咖啡馆 · 高德数据验证 · 2026 年 4 月 18 日</p>
+        <div class="notice">📍 澄海汽车总站为起点 | ✅ 已验证营业状态 | 🆕 新增热门新店</div>
+        
+        <div class="wheel-section">
+            <div class="wheel-title">🎯 点击按钮随机挑选</div>
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <canvas id="wheel-canvas" width="760" height="760"></canvas>
+                <div class="wheel-center">☕</div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()">🎲 开始旋转</button>
+            <div class="result" id="result"><div class="result-text">点击上方按钮开始</div></div>
+        </div>
+        
+        <div class="list-section">
+            <div class="list-title">🏆 独立咖啡店精选榜单（高德数据验证）</div>
+            <div id="cafeList"></div>
+        </div>
+    </div>
+
+    <script>
+        const cafes = [
+            { name: "踢桃咖啡", region: "潮州", distance: "33.4km", duration: "66 分钟", rating: 4.9, feature: "古民居·文创", hours: "10:00-22:00", desc: "牌坊街内，3 家店：灶巷 19 号、泰安路 9 号、家伙巷 23 号", isNew: false },
+            { name: "自由咖啡", region: "潮州", distance: "32.9km", duration: "67 分钟", rating: 4.4, feature: "音乐咖啡", hours: "10:00-24:00", desc: "太平路义井巷 4 号，老房子改造，有吉他", isNew: false },
+            { name: "喃妙茶舍", region: "潮州", distance: "32.9km", duration: "65 分钟", rating: 4.7, feature: "百年老宅", hours: "10:00-23:00", desc: "家伙巷 11-12 号，大夫第改造，茶舍", isNew: false },
+            { name: "Titalk 醍桃咖啡", region: "潮州", distance: "33.8km", duration: "67 分钟", rating: 4.0, feature: "潮式创意", hours: "09:30-22:00", desc: "社登 19 号，潮式创意饮品，古城店", isNew: true },
+            { name: "咖匠 COFFEE", region: "潮州", distance: "33.2km", duration: "65 分钟", rating: 4.7, feature: "精品手冲", hours: "10:00-22:00", desc: "新桥东路新和里，142 条点评", isNew: false },
+            { name: "幸林咖啡", region: "潮州", distance: "33.0km", duration: "65 分钟", rating: 4.3, feature: "西湖边", hours: "09:00-21:00", desc: "西湖附近，盖碗澳白", isNew: false },
+            { name: "岛屿咖啡", region: "潮州", distance: "35.2km", duration: "68 分钟", rating: 4.5, feature: "凤凰台旁", hours: "10:00-22:00", desc: "城西街道，环境优雅静谧", isNew: false },
+            { name: "虚度咖啡", region: "潮安", distance: "40.2km", duration: "70 分钟", rating: 4.3, feature: "闹中取静", hours: "10:00-22:00", desc: "潮枫路中段市委新址后面 A 幢 10 号", isNew: true },
+            { name: "Maps Coffee", region: "潮安", distance: "38.6km", duration: "68 分钟", rating: 4.4, feature: "社区咖啡", hours: "10:00-22:00", desc: "福安路新春园 17 幢 2 号", isNew: true },
+            { name: "丁满咖啡", region: "揭阳", distance: "54.8km", duration: "78 分钟", rating: 4.5, feature: "自烘精品", hours: "10:00-22:00", desc: "榕江华府，手冲为主，自家烘焙", isNew: false },
+            { name: "记得咖啡", region: "揭阳", distance: "55.6km", duration: "80 分钟", rating: 4.5, feature: "社区咖啡", hours: "10:00-23:30", desc: "榕城区东升街道新河路 602 号", isNew: true },
+            { name: "洛咖", region: "揭阳", distance: "56.0km", duration: "82 分钟", rating: 4.3, feature: "仁港", hours: "10:00-22:00", desc: "东兴街道仁港村新楼 G 栋 39 号", isNew: true },
+            { name: "时光工坊咖啡馆", region: "揭阳", distance: "55.8km", duration: "81 分钟", rating: 4.3, feature: "仁港美食街", hours: "10:00-22:00", desc: "东山仁港路美食街中段 16-17 号", isNew: true }
+        ];
+
+        const colors = ['#11998e', '#38ef7d', '#00b09b', '#96c93d', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#38f9d7', '#fa709a', '#fee140'];
+        cafes.sort((a, b) => b.rating - a.rating);
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel(rotation) {
+            const canvas = document.getElementById('wheel-canvas');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 20;
+            const segmentAngle = (2 * Math.PI) / cafes.length;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(rotation);
+
+            for (let i = 0; i < cafes.length; i++) {
+                const startAngle = i * segmentAngle - Math.PI / 2;
+                const endAngle = (i + 1) * segmentAngle - Math.PI / 2;
+
+                // 绘制扇形
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 绘制文字 - 垂直排列
+                ctx.save();
+                ctx.rotate(startAngle + segmentAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // 垂直文字 - 每个字符从内到外沿径向排列
+                const text = cafes[i].name;
+                const charSpacing = 20;
+                const fontSize = 18;
+                ctx.font = 'bold ' + fontSize + 'px Arial';
+                
+                // 从内到外排列，整体居中于扇形径向空间
+                const innerEdge = radius * 0.35;
+                const outerEdge = radius * 0.88;
+                const maxSpan = outerEdge - innerEdge;
+                const actualSpacing = text.length > 1 ? Math.min(charSpacing, maxSpan / (text.length - 1)) : charSpacing;
+                const startRadius = innerEdge + (maxSpan - (text.length - 1) * actualSpacing) / 2;
+                for (let j = 0; j < text.length; j++) {
+                    const r = startRadius + j * actualSpacing;
+                    ctx.save();
+                    ctx.translate(r, 0);
+                    ctx.rotate(-Math.PI / 2);
+                    // 先画黑色描边提高对比度
+                    ctx.strokeStyle = 'rgba(0,0,0,0.9)';
+                    ctx.lineWidth = 6;
+                    ctx.fillStyle = '#fff';
+                    ctx.shadowColor = 'rgba(0,0,0,1)';
+                    ctx.shadowBlur = 0;
+                    ctx.strokeText(text[j], 0, 0);
+                    ctx.fillText(text[j], 0, 0);
+                    ctx.restore();
+                }
+                ctx.restore();
+            }
+
+            ctx.restore();
+        }
+
+        function createList() {
+            const list = document.getElementById('cafeList');
+            cafes.forEach((cafe, index) => {
+                const item = document.createElement('div');
+                item.className = 'cafe-item';
+                const newTag = cafe.isNew ? '<span class="new-tag">NEW</span>' : '';
+                item.innerHTML = '<div class="cafe-header"><span class="cafe-name">' + (index + 1) + '. ' + cafe.name + newTag + ' <span style="font-size:0.8em;color:#666">' + cafe.region + '</span></span><span class="score">' + cafe.rating + '⭐</span></div><div class="cafe-info"><span>📍 ' + cafe.distance + '</span><span>⏰ ' + cafe.hours + '</span><span>🎯 ' + cafe.feature + '</span></div><div style="color:#888;font-size:0.75em;margin-top:4px;">' + cafe.desc + '</div>';
+                list.appendChild(item);
+            });
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            const result = document.getElementById('result');
+            result.innerHTML = '<div class="result-text">🎲 转盘旋转中...</div>';
+            
+            const randomIndex = Math.floor(Math.random() * cafes.length);
+            const segmentAngle = 360 / cafes.length;
+            const targetRotation = 360 * 5 + (360 - (randomIndex * segmentAngle + segmentAngle / 2));
+            
+            let start = null;
+            const duration = 4000;
+            const startRotation = currentRotation;
+
+            function animate(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                currentRotation = startRotation + targetRotation * easeProgress;
+                drawWheel(currentRotation * Math.PI / 180);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    const selected = cafes[randomIndex];
+                    const newTag = selected.isNew ? ' 🆕' : '';
+                    result.innerHTML = '<div class="result-text">🎉 ' + selected.name + newTag + '</div><div class="result-info">' + selected.region + ' · ' + selected.distance + ' · ' + selected.duration + ' · ' + selected.rating + '⭐<br>⏰ ' + selected.hours + '<br>' + selected.desc + '</div>';
+                    isSpinning = false;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // 初始化
+        drawWheel(0);
+        createList();
+    </script>
+</body>
+</html>
