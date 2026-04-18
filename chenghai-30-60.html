@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>澄海周边30-60km咖啡店转盘（2025更新版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        .container { max-width: 100%; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+        .notice {
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            color: #fff;
+            font-size: 0.75em;
+            text-align: center;
+        }
+        .back-btn {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .wheel-section {
+            background: rgba(255,255,255,0.98);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .wheel-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        .wheel-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        @media (min-width: 375px) {
+            .wheel-container { width: 320px; height: 320px; }
+        }
+        @media (min-width: 414px) {
+            .wheel-container { width: 350px; height: 350px; }
+        }
+        #wheel-svg {
+            width: 100%;
+            height: 100%;
+            transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .pointer {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 35px solid #ff4757;
+            z-index: 20;
+        }
+        .wheel-center {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .spin-btn {
+            display: block;
+            width: 80%;
+            max-width: 200px;
+            margin: 20px auto 0;
+            padding: 14px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+        .result {
+            text-align: center;
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 12px;
+            min-height: 80px;
+        }
+        .result-text { font-size: 1.1em; color: #333; font-weight: bold; }
+        .result-info { font-size: 0.85em; color: #666; margin-top: 4px; }
+        .list-section {
+            background: rgba(255,255,255,0.98);
+            border-radius: 16px;
+            padding: 15px;
+        }
+        .list-title { color: #333; margin-bottom: 12px; font-size: 1.1em; font-weight: 600; }
+        .cafe-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid #f5576c;
+        }
+        .cafe-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .cafe-name { font-weight: 600; color: #333; font-size: 0.95em; }
+        .new-tag { background: #ff4757; color: #fff; font-size: 0.6em; padding: 1px 4px; border-radius: 3px; margin-left: 4px; vertical-align: middle; }
+        .score { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+            color: #fff; 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 0.75em; 
+            font-weight: bold;
+        }
+        .cafe-info { color: #666; font-size: 0.8em; }
+        .cafe-info span { background: rgba(240, 147, 251, 0.1); padding: 2px 6px; border-radius: 6px; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← 返回首页</a>
+        <h1>🎡 澄海周边30-60km咖啡店</h1>
+        <p class="subtitle">避开汕头禁摩区 · 走国道/省道 · 2025版</p>
+        <div class="notice">
+            📍 以澄海汽车总站为起点 | 🛣️ 高德导航实际距离（不走高速）<br>
+            ⛔ 避开汕头金平/龙湖禁摩核心区 | ✅ 已更新店铺信息
+        </div>
+        
+        <div class="wheel-section">
+            <div class="wheel-title">🎯 点击按钮随机挑选</div>
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <svg id="wheel-svg" viewBox="0 0 400 400">
+                    <g id="wheel-group" transform="translate(200,200)"></g>
+                </svg>
+                <div class="wheel-center">☕</div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()">🎲 开始旋转</button>
+            <div class="result" id="result">
+                <div class="result-text">点击上方按钮开始</div>
+            </div>
+        </div>
+        
+        <div class="list-section">
+            <div class="list-title">🏆 30-60km咖啡店排行榜（2025更新）</div>
+            <div id="cafeList"></div>
+        </div>
+    </div>
+
+    <script>
+        const cafes = [
+            { name: "踢桃咖啡", region: "潮州", distance: "~38km", rating: 4.9, feature: "古民居·文创", desc: "牌坊街内，2024年新增2家店（泰安路、家伙巷）", isNew: false },
+            { name: "松发咖啡厅", region: "潮州", distance: "~38km", rating: 4.8, feature: "高空景观", desc: "水平路1号松发生活馆3楼", isNew: false },
+            { name: "燕谷咖啡", region: "濠江", distance: "~35km", rating: 4.8, feature: "社区温馨", desc: "达濠街道，避开禁摩区的优选", isNew: false },
+            { name: "咖匠COFFEE", region: "潮州", distance: "~38km", rating: 4.7, feature: "精品手冲", desc: "新桥东路新和里，142条点评", isNew: false },
+            { name: "自由咖啡", region: "潮州", distance: "~38km", rating: 4.7, feature: "音乐咖啡", desc: "太平路义井巷4号，老房子改造，有吉他", isNew: true },
+            { name: "探觅咖啡", region: "潮州", distance: "~38km", rating: 4.6, feature: "天台咖啡", desc: "牌坊街，潮州首家天台咖啡厅", isNew: false },
+            { name: "喃妙民宿茶舍", region: "潮州", distance: "~38km", rating: 4.6, feature: "百年老宅", desc: "家伙巷11号/29号，大夫第改造", isNew: true },
+            { name: "岛屿咖啡", region: "潮州", distance: "~40km", rating: 4.5, feature: "凤凰台旁", desc: "城西街道，环境优雅静谧", isNew: false },
+            { name: "听花堂", region: "潮州", distance: "~38km", rating: 4.5, feature: "文艺范", desc: "卫星一路马槽巷2号", isNew: true },
+            { name: "丁满咖啡", region: "揭阳", distance: "~55km", rating: 4.5, feature: "自烘精品", desc: "榕江华府，手冲为主，自家烘焙", isNew: false },
+            { name: "索尔咖啡", region: "揭阳", distance: "~58km", rating: 4.5, feature: "LOFT工业风", desc: "江南新城，SCAA认证咖啡师", isNew: false },
+            { name: "AllenCake", region: "揭阳", distance: "~56km", rating: 4.4, feature: "拉花冠军", desc: "揭阳拉花第一人Allen", isNew: false },
+            { name: "慢居客栈", region: "潮州", distance: "~38km", rating: 4.4, feature: "两进老宅", desc: "义井巷38号，肆点金格局", isNew: true },
+            { name: "幸林咖啡", region: "潮州", distance: "~38km", rating: 4.3, feature: "西湖边", desc: "西湖附近，盖碗澳白", isNew: false },
+            { name: "由稻里咖啡", region: "潮阳", distance: "~42km", rating: 4.3, feature: "潮阳棉城", desc: "十多年老店", isNew: false }
+        ];
+
+        const colors = ['#f093fb', '#f5576c', '#ffecd2', '#fcb69f', '#a8edea', '#fed6e3', '#d299c2', '#fef9d7', '#e2c0eb', '#c2e9fb', '#a1c4fd', '#fbc2eb', '#ff9ff3', '#54a0ff', '#5f27cd'];
+
+        function createWheel() {
+            const group = document.getElementById('wheel-group');
+            const segmentAngle = 360 / cafes.length;
+            const radius = 180;
+
+            cafes.forEach((cafe, index) => {
+                const startAngle = index * segmentAngle;
+                const endAngle = (index + 1) * segmentAngle;
+                const startRad = (startAngle - 90) * Math.PI / 180;
+                const endRad = (endAngle - 90) * Math.PI / 180;
+                const x1 = Math.cos(startRad) * radius;
+                const y1 = Math.sin(startRad) * radius;
+                const x2 = Math.cos(endRad) * radius;
+                const y2 = Math.sin(endRad) * radius;
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M 0 0 L ' + x1 + ' ' + y1 + ' A ' + radius + ' ' + radius + ' 0 ' + (segmentAngle > 180 ? 1 : 0) + ' 1 ' + x2 + ' ' + y2 + ' Z');
+                path.setAttribute('fill', colors[index]);
+                path.setAttribute('stroke', '#fff');
+                path.setAttribute('stroke-width', '2');
+                group.appendChild(path);
+                
+                const centerAngle = (startAngle + endAngle) / 2 - 90;
+                const textRadius = radius * 0.68;
+                const textX = Math.cos(centerAngle * Math.PI / 180) * textRadius;
+                const textY = Math.sin(centerAngle * Math.PI / 180) * textRadius;
+                const textGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                textGroup.setAttribute('transform', 'translate(' + textX + ', ' + textY + ') rotate(' + (centerAngle + 90) + ')');
+                
+                const chars = cafe.name.split('');
+                const fontSize = chars.length > 4 ? 11 : 13;
+                const lineHeight = fontSize + 2;
+                const totalHeight = chars.length * lineHeight;
+                const startY = -(totalHeight - lineHeight) / 2;
+                
+                chars.forEach((char, i) => {
+                    const charText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    charText.setAttribute('x', 0);
+                    charText.setAttribute('y', startY + i * lineHeight);
+                    charText.setAttribute('text-anchor', 'middle');
+                    charText.setAttribute('fill', '#fff');
+                    charText.setAttribute('font-size', fontSize);
+                    charText.setAttribute('font-weight', 'bold');
+                    charText.textContent = char;
+                    textGroup.appendChild(charText);
+                });
+                group.appendChild(textGroup);
+            });
+        }
+
+        function createList() {
+            const list = document.getElementById('cafeList');
+            cafes.forEach((cafe, index) => {
+                const item = document.createElement('div');
+                item.className = 'cafe-item';
+                const newTag = cafe.isNew ? '<span class="new-tag">NEW</span>' : '';
+                item.innerHTML = '<div class="cafe-header"><span class="cafe-name">' + (index + 1) + '. ' + cafe.name + newTag + ' <span style="font-size:0.8em;color:#666">' + cafe.region + '</span></span><span class="score">' + cafe.rating + '分</span></div><div class="cafe-info"><span>📍 ' + cafe.distance + '</span><span>⭐ ' + cafe.feature + '</span></div><div style="color:#888;font-size:0.75em;margin-top:4px;">' + cafe.desc + '</div>';
+                list.appendChild(item);
+            });
+        }
+
+        let isSpinning = false;
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            var wheel = document.getElementById('wheel-svg');
+            var result = document.getElementById('result');
+            result.innerHTML = '<div class="result-text">🎲 转盘旋转中...</div>';
+            var randomIndex = Math.floor(Math.random() * cafes.length);
+            var segmentAngle = 360 / cafes.length;
+            var targetAngle = randomIndex * segmentAngle + segmentAngle / 2;
+            var totalRotation = 360 * 5 + (360 - targetAngle);
+            wheel.style.transform = 'rotate(' + totalRotation + 'deg)';
+            setTimeout(function() {
+                var selected = cafes[randomIndex];
+                const newTag = selected.isNew ? ' 🆕' : '';
+                result.innerHTML = '<div class="result-text">🎉 ' + selected.name + newTag + '</div><div class="result-info">' + selected.region + ' · ' + selected.distance + ' · ' + selected.rating + '分<br>' + selected.desc + '</div>';
+                isSpinning = false;
+            }, 4000);
+        }
+
+        createWheel();
+        createList();
+    </script>
+</body>
+</html>
