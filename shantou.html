@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎡 汕头金平龙湖咖啡店转盘 TOP20（2026 年 4 月更新版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); min-height: 100vh; padding: 15px; }
+        .container { max-width: 100%; margin: 0 auto; }
+        h1 { text-align: center; color: #fff; font-size: 1.4em; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.9); font-size: 0.85em; margin-bottom: 10px; }
+        .notice { background: rgba(255,255,255,0.2); border-radius: 8px; padding: 8px; margin-bottom: 15px; color: #fff; font-size: 0.75em; text-align: center; }
+        .back-btn { display: inline-block; color: #fff; text-decoration: none; margin-bottom: 10px; font-size: 0.9em; }
+        .wheel-section { background: rgba(255,255,255,0.98); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .wheel-title { text-align: center; margin-bottom: 10px; color: #333; font-size: 1.1em; font-weight: 600; }
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+        @media (min-width: 375px) { .wheel-container { width: 320px; height: 320px; } }
+        @media (min-width: 414px) { .wheel-container { width: 350px; height: 350px; } }
+        #wheel-svg { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.23, 1, 0.32, 1); }
+        .pointer { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #ff4757; z-index: 20; }
+        .wheel-center { position: absolute; width: 50px; height: 50px; background: #fff; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .spin-btn { display: block; width: 80%; max-width: 200px; margin: 20px auto 0; padding: 14px 20px; font-size: 1.1em; font-weight: bold; color: #fff; background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); border: none; border-radius: 30px; cursor: pointer; }
+        .result { text-align: center; margin-top: 15px; padding: 12px; background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-radius: 12px; min-height: 80px; }
+        .result-text { font-size: 1.1em; color: #333; font-weight: bold; }
+        .result-info { font-size: 0.85em; color: #666; margin-top: 4px; }
+        .list-section { background: rgba(255,255,255,0.98); border-radius: 16px; padding: 15px; }
+        .list-title { color: #333; margin-bottom: 12px; font-size: 1.1em; font-weight: 600; }
+        .cafe-item { background: #f8f9fa; border-radius: 10px; padding: 12px; margin-bottom: 10px; border-left: 3px solid #ff6b6b; }
+        .cafe-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .cafe-name { font-weight: 600; color: #333; font-size: 0.95em; }
+        .new-tag { background: #ff4757; color: #fff; font-size: 0.6em; padding: 1px 4px; border-radius: 3px; margin-left: 4px; vertical-align: middle; }
+        .score { background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; }
+        .cafe-info { color: #666; font-size: 0.8em; }
+        .cafe-info span { background: rgba(255, 107, 107, 0.1); padding: 2px 6px; border-radius: 6px; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">⬅ 返回首页</a>
+        <h1>🎡 汕头咖啡店转盘</h1>
+        <p class="subtitle">金平区 · 龙湖区 · TOP20 · 2026 年 4 月更新</p>
+        <div class="notice">✅ 已移除停业店铺 | 🆕 新增 2024-2026 热门新店</div>
+        
+        <div class="wheel-section">
+            <div class="wheel-title">🎯 点击按钮随机挑选</div>
+            <div class="wheel-container">
+                <div class="pointer"></div>
+                <svg id="wheel-svg" viewBox="0 0 400 400"><g id="wheel-group" transform="translate(200,200)"></g></svg>
+                <div class="wheel-center">☕</div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()">🎲 开始旋转</button>
+            <div class="result" id="result"><div class="result-text">点击上方按钮开始</div></div>
+        </div>
+        
+        <div class="list-section">
+            <div class="list-title">🏆 汕头咖啡店 TOP20（2026 年版）</div>
+            <div id="cafeList"></div>
+        </div>
+    </div>
+
+    <script>
+        const cafes = [
+            { name: "松松咖啡", region: "龙湖", rating: 4.9, feature: "24 小时大空间", desc: "迎宾路，1300㎡，年轻人聚集地", isNew: false },
+            { name: "CafeOnWarm", region: "金平", rating: 4.9, feature: "服务天花板", desc: "小公园店/丹霞店/龙眼店，月销量最高", isNew: false },
+            { name: "GOTOCOFFEE", region: "龙湖", rating: 4.8, feature: "冠军店", desc: "碧霞庄，世界咖啡师大赛亚军", isNew: false },
+            { name: "燕谷咖啡", region: "金平", rating: 4.8, feature: "社区温馨", desc: "公信路桂园，15 元小杯拿铁", isNew: false },
+            { name: "sogalab", region: "金平", rating: 4.8, feature: "复古怀旧", desc: "杏园街，时光隧道，台风冷气王", isNew: false },
+            { name: "WaterCafe", region: "龙湖", rating: 4.7, feature: "平价日常", desc: "丹霞庄，自带杯减 5 元", isNew: false },
+            { name: "NAPCAFE", region: "龙湖", rating: 4.7, feature: "Supreme", desc: "丹阳庄东区，满墙 Supreme 收藏", isNew: false },
+            { name: "椿树咖啡", region: "龙湖", rating: 4.6, feature: "上海风格", desc: "碧霞庄，2024 新开业，精品咖啡", isNew: true },
+            { name: "术咖啡", region: "金平", rating: 4.6, feature: "已搬迁", desc: "市中心新址，位置更佳", isNew: false },
+            { name: "WCOFFEE", region: "龙湖", rating: 4.5, feature: "莫兰迪棕", desc: "金涛庄，斑斓椰奶拿铁", isNew: false },
+            { name: "SlowCafe", region: "龙湖", rating: 4.5, feature: "图书咖啡", desc: "衡山路紫茵庄，2024 新开业", isNew: true },
+            { name: "Northbridge", region: "龙湖", rating: 4.4, feature: "韩系小屋", desc: "丹阳街，独栋白色小屋", isNew: false },
+            { name: "PARKMOOD", region: "金平", rating: 4.4, feature: "游园叹啡", desc: "广厦新城，墨绿美式复古", isNew: false },
+            { name: "微饮咖啡", region: "龙湖", rating: 4.4, feature: "有院子", desc: "长平路菊园，从中旅搬迁", isNew: false },
+            { name: "乌托邦", region: "金平", rating: 4.3, feature: "自家烘焙", desc: "中山路 LOFT 街区", isNew: false },
+            { name: "塔拉", region: "金平", rating: 4.3, feature: "北欧风", desc: "嘉泰雅园，简约居家", isNew: false },
+            { name: "CHILLCOFFEE", region: "龙湖", rating: 4.2, feature: "克莱因蓝", desc: "金砂路，汕头蓝鼻子", isNew: false },
+            { name: "24Hcolor", region: "金平", rating: 4.2, feature: "咖啡民宿", desc: "外马路，玻璃幕墙", isNew: false },
+            { name: "洪浪咖啡", region: "金平", rating: 4.1, feature: "老市井", desc: "共和路，咖啡 + 肠粉", isNew: false },
+            { name: "浮遊", region: "金平", rating: 4.1, feature: "日式面包", desc: "金新北路，白色极简", isNew: false }
+        ];
+
+        const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#ee5a24', '#009432', '#0652dd', '#9980fa', '#f79f1f', '#a3cb38', '#1289a7', '#d980fa', '#b33939', '#cd6133', '#84817a', '#227093'];
+
+        function createWheel() {
+            const group = document.getElementById('wheel-group');
+            const segmentAngle = 360 / cafes.length;
+            const radius = 180;
+            cafes.forEach((cafe, index) => {
+                const startAngle = index * segmentAngle;
+                const endAngle = (index + 1) * segmentAngle;
+                const startRad = (startAngle - 90) * Math.PI / 180;
+                const endRad = (endAngle - 90) * Math.PI / 180;
+                const x1 = Math.cos(startRad) * radius, y1 = Math.sin(startRad) * radius;
+                const x2 = Math.cos(endRad) * radius, y2 = Math.sin(endRad) * radius;
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', 'M 0 0 L ' + x1 + ' ' + y1 + ' A ' + radius + ' ' + radius + ' 0 ' + (segmentAngle > 180 ? 1 : 0) + ' 1 ' + x2 + ' ' + y2 + ' Z');
+                path.setAttribute('fill', colors[index]);
+                path.setAttribute('stroke', '#fff');
+                path.setAttribute('stroke-width', '2');
+                group.appendChild(path);
+                const centerAngle = (startAngle + endAngle) / 2 - 90;
+                const textX = Math.cos(centerAngle * Math.PI / 180) * radius * 0.68;
+                const textY = Math.sin(centerAngle * Math.PI / 180) * radius * 0.68;
+                const textGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                textGroup.setAttribute('transform', 'translate(' + textX + ', ' + textY + ') rotate(' + (centerAngle + 90) + ')');
+                const chars = cafe.name.split('');
+                const fontSize = chars.length > 4 ? 10 : 12;
+                chars.forEach((char, i) => {
+                    const charText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    charText.setAttribute('x', 0);
+                    charText.setAttribute('y', -(chars.length * 14 - 14) / 2 + i * 14);
+                    charText.setAttribute('text-anchor', 'middle');
+                    charText.setAttribute('fill', '#fff');
+                    charText.setAttribute('font-size', fontSize);
+                    charText.setAttribute('font-weight', 'bold');
+                    charText.textContent = char;
+                    textGroup.appendChild(charText);
+                });
+                group.appendChild(textGroup);
+            });
+        }
+
+        function createList() {
+            const list = document.getElementById('cafeList');
+            cafes.forEach((cafe, index) => {
+                const item = document.createElement('div');
+                item.className = 'cafe-item';
+                const newTag = cafe.isNew ? '<span class="new-tag">NEW</span>' : '';
+                item.innerHTML = '<div class="cafe-header"><span class="cafe-name">' + (index + 1) + '. ' + cafe.name + newTag + ' <span style="font-size:0.8em;color:#666">' + cafe.region + '</span></span><span class="score">' + cafe.rating + '⭐</span></div><div class="cafe-info"><span>🎯 ' + cafe.feature + '</span></div><div style="color:#888;font-size:0.75em;margin-top:4px;">' + cafe.desc + '</div>';
+                list.appendChild(item);
+            });
+        }
+
+        let isSpinning = false;
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+            const wheel = document.getElementById('wheel-svg');
+            const result = document.getElementById('result');
+            result.innerHTML = '<div class="result-text">🎲 转盘旋转中...</div>';
+            const randomIndex = Math.floor(Math.random() * cafes.length);
+            const segmentAngle = 360 / cafes.length;
+            const totalRotation = 360 * 5 + (360 - (randomIndex * segmentAngle + segmentAngle / 2));
+            wheel.style.transform = 'rotate(' + totalRotation + 'deg)';
+            setTimeout(() => {
+                const selected = cafes[randomIndex];
+                const newTag = selected.isNew ? ' 🆕' : '';
+                result.innerHTML = '<div class="result-text">🎉 ' + selected.name + newTag + '</div><div class="result-info">' + selected.region + ' · ' + selected.rating + '⭐ · ' + selected.feature + '<br>' + selected.desc + '</div>';
+                isSpinning = false;
+            }, 4000);
+        }
+
+        createWheel();
+        createList();
+    </script>
+</body>
+</html>
