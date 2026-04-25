@@ -380,7 +380,7 @@
                     <span id="resultDistance">📍 距离</span>
                 </div>
                 <div class="result-phone" id="resultPhone"></div>
-                <button class="navi-btn" id="naviBtn" onclick="navigateToCafe()">🗺️ 导航到店</button>
+                <button class="navi-btn" id="copyBtn" onclick="copyCafeName()">📋 复制店名</button>
                 <button class="scroll-btn" id="scrollBtn" onclick="scrollToResult()">👇 查看榜单位置</button>
             </div>
         </div>
@@ -603,18 +603,35 @@
             btn.textContent = '🎲 再抽一家';
 
             document.getElementById('resultCard').classList.add('show');
-            document.getElementById('naviBtn').style.display = 'inline-block';
+            document.getElementById('copyBtn').style.display = 'inline-block';
             isDrawing = false;
         }
 
-        // 导航到店铺（在高德地图中打开搜索结果，由用户决定是否导航）
-        function navigateToCafe() {
+        // 一键复制店名到剪贴板
+        function copyCafeName() {
             const nameEl = document.getElementById('resultName');
             if (!nameEl) return;
             const cafeName = nameEl.textContent.replace(/\s*<[^>]+>/g, '').trim();
-            // 高德地图网页搜索，输入店名，用户自己决定是否导航
-            const searchUrl = `https://m.amap.com/searchbox/mapsearch?query=${encodeURIComponent(cafeName)}&city=445100`;
-            window.location.href = searchUrl;
+            navigator.clipboard.writeText(cafeName).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const orig = btn.textContent;
+                btn.textContent = '✅ 已复制';
+                setTimeout(() => { btn.textContent = orig; }, 1500);
+            }).catch(() => {
+                // 降级方案：选中文字提示复制
+                const ta = document.createElement('textarea');
+                ta.value = cafeName;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                const btn = document.getElementById('copyBtn');
+                const orig = btn.textContent;
+                btn.textContent = '✅ 已复制';
+                setTimeout(() => { btn.textContent = orig; }, 1500);
+            });
         }
 
         // 点击按钮后滚动到抽中的店
