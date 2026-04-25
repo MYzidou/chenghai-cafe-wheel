@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>🌙 深夜咖啡店 TOP93 随机抽</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+        .container { max-width: 500px; margin: 0 auto; }
+        .back-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .back-bar a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9em;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+        .back-bar a:hover { background: rgba(255,255,255,0.25); }
+        h1 {
+            text-align: center;
+            color: #f39c12;
+            font-size: 1.4em;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85em;
+            margin-bottom: 15px;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 1.5em;
+            color: #f39c12;
+            font-weight: bold;
+        }
+        .stat-label {
+            font-size: 0.75em;
+            color: #aaa;
+        }
+
+        /* 抽取区域 */
+        .draw-section {
+            background: rgba(255,255,255,0.98);
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .draw-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .draw-btn {
+            display: block;
+            width: 90%;
+            max-width: 280px;
+            margin: 0 auto 20px;
+            padding: 18px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+            transition: all 0.3s;
+        }
+        .draw-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.5);
+        }
+        .draw-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+        .draw-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .draw-btn.spinning {
+            animation: pulse-btn 0.5s ease-in-out infinite;
+        }
+        @keyframes pulse-btn {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 结果展示 */
+        .result-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+            min-height: 120px;
+            display: none;
+        }
+        .result-card.show {
+            display: block;
+            animation: pop-in 0.4s ease-out;
+        }
+        @keyframes pop-in {
+            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .result-rank {
+            display: inline-block;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+            color: #fff;
+            font-size: 0.8em;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+        .result-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .result-address {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .result-meta {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 0.85em;
+        }
+        .result-meta span {
+            background: rgba(255,255,255,0.6);
+            padding: 4px 12px;
+            border-radius: 15px;
+            color: #555;
+        }
+        .tag-24h {
+            background: #e74c3c !important;
+            color: #fff !important;
+        }
+        .result-phone {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #3498db;
+        }
+        .navi-btn {
+            display: inline-block;
+            margin-top: 10px;
+            margin-right: 8px;
+            padding: 8px 20px;
+            font-size: 0.9em;
+            color: #fff;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .navi-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+        .scroll-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 20px;
+            font-size: 0.9em;
+            color: #fff;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .scroll-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        /* 上次抽取提示 */
+        .last-draw {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* 列表区域 */
+        .list-section {
+            background: rgba(255,255,255,0.98);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .list-title {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .list-filter {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 6px 14px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 20px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%);
+            color: #fff;
+            border-color: transparent;
+        }
+        .coffee-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f39c12;
+            transition: all 0.2s;
+        }
+        .coffee-item:hover {
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .coffee-item.highlight {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-left-color: #e74c3c;
+            animation: highlight-pulse 2s ease-in-out infinite;
+        }
+        @keyframes highlight-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+        }
+        .coffee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .coffee-rank {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #f39c12;
+            min-width: 35px;
+        }
+        .coffee-rank.top3 { color: #ffd700; text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+        .coffee-rank.top10 { color: #c0c0c0; }
+        .coffee-name {
+            font-weight: 700;
+            color: #333;
+            flex: 1;
+            margin-left: 8px;
+        }
+        .coffee-distance {
+            font-size: 1em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .coffee-address {
+            font-size: 0.8em;
+            color: #666;
+            margin-bottom: 4px;
+            padding-left: 43px;
+        }
+        .coffee-hours {
+            font-size: 0.8em;
+            color: #27ae60;
+            padding-left: 43px;
+        }
+        .coffee-phone {
+            font-size: 0.75em;
+            color: #888;
+            padding-left: 43px;
+            margin-top: 4px;
+        }
+        .tag-small {
+            display: inline-block;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 0.65em;
+            padding: 1px 6px;
+            border-radius: 8px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75em;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-bar">
+            <a href="coffee.html">← 返回</a>
+        </div>
+
+        <h1>🌙 深夜咖啡店</h1>
+        <p class="subtitle">营业至午夜12点后 · 澄海汽车总站周边60km</p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-num">93</div>
+                <div class="stat-label">上榜店铺</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">60km</div>
+                <div class="stat-label">搜索半径</div>
+            </div>
+        </div>
+
+        <div class="draw-section">
+            <div class="draw-icon">🎰</div>
+            <button class="draw-btn" id="drawBtn" onclick="drawRandom()">🎲 随机抽一家</button>
+            <div class="last-draw" id="lastDraw"></div>
+
+            <div class="result-card" id="resultCard">
+                <div class="result-rank" id="resultRank">TOP 1</div>
+                <div class="result-name" id="resultName">店名</div>
+                <div class="result-address" id="resultAddress">地址</div>
+                <div class="result-meta">
+                    <span id="resultHours">🕐 营业时间</span>
+                    <span id="resultDistance">📍 距离</span>
+                </div>
+                <div class="result-phone" id="resultPhone"></div>
+                <button class="navi-btn" id="naviBtn" onclick="navigateToCafe()">🗺️ 导航到店</button>
+                <button class="scroll-btn" id="scrollBtn" onclick="scrollToResult()">👇 查看榜单位置</button>
+            </div>
+        </div>
+
+        <div class="list-section">
+            <div class="list-title">📋 完整榜单（按距离排序）</div>
+            <div class="list-filter">
+                <button class="filter-btn active" onclick="filterList('all')">全部</button>
+                <button class="filter-btn" onclick="filterList('24h')">24小时</button>
+                <button class="filter-btn" onclick="filterList('near')">5km内</button>
+                <button class="filter-btn" onclick="filterList('chaozhou')">潮州</button>
+                <button class="filter-btn" onclick="filterList('jieyang')">揭阳</button>
+            </div>
+            <div id="coffeeList"></div>
+        </div>
+
+        <div class="footer">
+            <p>数据来源：高德地图 API | 更新时间：2026-04-24</p>
+            <p>🎯 智能防重复：连续抽取不会抽到同一家</p>
+        </div>
+    </div>
+
+    <script>
+
+        
+
+        
+        // 深夜咖啡店数据（93家）更新于2026-04-24
+        const cafes = [
+            { rank: 1, name: "鏡像咖啡製造所(IMAGE CAFE)", address: "宁川路世聪发展大厦第B区06铺", hours: "07:30-03:00", distance: "0.3km", phone: "15918977759", is24h: false },
+            { rank: 2, name: "13咖啡", address: "通和路与安庆路交叉口东南40米", hours: "13:00-24:00", distance: "0.9km", phone: "18023054841", is24h: false },
+            { rank: 3, name: "觅野营地Coffee&amp;Bar(文冠店)", address: "文冠路与华业街交界", hours: "12:30-02:00", distance: "1.0km", phone: "", is24h: false },
+            { rank: 4, name: "AODA COFFEE(金煌时代雅园店)", address: "金煌时代雅园东南门旁A15店面", hours: "08:30-24:00", distance: "1.0km", phone: "13643059629", is24h: false },
+            { rank: 5, name: "Soft coffee(金煌时代雅园店)", address: "金煌时代6幢14号铺面", hours: "10:00-24:00", distance: "1.0km", phone: "15817952343", is24h: false },
+            { rank: 6, name: "4u coffee", address: "澄华街道通和路鸿潮毛织厂4号店面", hours: "14:00-24:00", distance: "1.0km", phone: "17260061493", is24h: false },
+            { rank: 7, name: "MXCOFFEE·麦想咖啡(龙光·颐景阳光锦府店)", address: "通乐路龙光阳光锦府6栋1层070号", hours: "13:30-24:00", distance: "1.5km", phone: "15889286858", is24h: false },
+            { rank: 8, name: "小道下山咖啡酒馆", address: "广益街道龙田安怡路东2横巷1号世瑞办公楼4层", hours: "13:00-02:00", distance: "1.7km", phone: "13536803777", is24h: false },
+            { rank: 9, name: "油壶咖啡(欣悦春天店)", address: "宁川东路4号欣悦春天花园3幢一层36号", hours: "24小时营业", distance: "1.7km", phone: "", is24h: true },
+            { rank: 10, name: "墨山咖啡", address: "启航国际影城", hours: "09:00-24:00", distance: "1.9km", phone: "13726508555", is24h: false },
+            { rank: 11, name: "Atelier cafe by Bar Mizuki", address: "中山北路40号坤源达进入02号店", hours: "07:30-03:00", distance: "2.1km", phone: "13923974003", is24h: false },
+            { rank: 12, name: "娘家咖啡", address: "华兴路与环城北路交叉口东北60米", hours: "14:00-24:00", distance: "2.2km", phone: "", is24h: false },
+            { rank: 13, name: "Dark Night黑夜咖啡", address: "文祠东路345号", hours: "24小时营业", distance: "2.6km", phone: "13682983383", is24h: true },
+            { rank: 14, name: "昉咖啡", address: "兴华路与冠兴路交叉口西南60米", hours: "24小时营业", distance: "2.8km", phone: "17322514214", is24h: true },
+            { rank: 15, name: "pinwei coffee", address: "职教学校旁边第五号店", hours: "24小时营业", distance: "3.5km", phone: "13425334693", is24h: true },
+            { rank: 16, name: "库迪咖啡(汕头龙湖宁和街店)", address: "黄山路与宁和街交叉口西北40米", hours: "10:00-24:00", distance: "9.0km", phone: "13338557777", is24h: false },
+            { rank: 17, name: "觅野营地Coffee&amp;STK(高新店)", address: "金平区高新区科技西路22号二楼A117", hours: "14:30-04:00", distance: "9.7km", phone: "13433323064", is24h: false },
+            { rank: 18, name: "Same U Coffee(龙湖工业区小区H片小区店)", address: "龙湖工业区H9栋105Sameucoofee", hours: "07:30-24:00", distance: "10.6km", phone: "15218959640", is24h: false },
+            { rank: 19, name: "77Coffee·Bar", address: "五洲大道", hours: "16:00-02:00", distance: "10.8km", phone: "", is24h: false },
+            { rank: 20, name: "阳光咖咖·台球咖啡馆", address: "大北山路潮创智谷D区401号", hours: "14:00-04:00", distance: "11.1km", phone: "15382934359", is24h: false },
+            { rank: 21, name: "MuJin Cafe Bar", address: "榕江路12号金湖花园", hours: "24小时营业", distance: "11.4km", phone: "15889224994", is24h: true },
+            { rank: 22, name: "傍边咖啡屋(金谷庄店)", address: "金谷园南门", hours: "10:00-02:30", distance: "11.5km", phone: "", is24h: false },
+            { rank: 23, name: "摩西咖啡(金东店)", address: "东厦路金东花园12栋129号", hours: "12:00-24:00", distance: "11.5km", phone: "0754-89922425", is24h: false },
+            { rank: 24, name: "松松咖啡24小时(迎宾路店)", address: "迎宾路建设银行旁", hours: "24小时营业", distance: "11.6km", phone: "13726502402", is24h: true },
+            { rank: 25, name: "福来咖啡", address: "碧波花园东门旁", hours: "10:00-24:00", distance: "11.8km", phone: "13288070096", is24h: false },
+            { rank: 26, name: "术咖啡ShotCafe", address: "丹霞中一街与丹霞中街交叉口西40米", hours: "24小时营业", distance: "11.9km", phone: "13929668772", is24h: true },
+            { rank: 27, name: "One coffee(万象润街店)", address: "长平路95号华润大厦商业裙楼259房", hours: "11:00-02:00", distance: "12.1km", phone: "15802081280", is24h: false },
+            { rank: 28, name: "momo咖啡", address: "飞厦凤园8栋101", hours: "11:00-00:30", distance: "12.1km", phone: "15767983767", is24h: false },
+            { rank: 29, name: "CI柠·臻选·咖啡·鲜果茶·全日轻食(万象城店)", address: "万象城润街3楼310-311号", hours: "12:00-03:00", distance: "12.1km", phone: "", is24h: false },
+            { rank: 30, name: "1/2coffee·平均咖啡馆", address: "珠池街道金涛东一街金涛庄东区43幢102号之一", hours: "09:00-24:00", distance: "12.1km", phone: "18819840498", is24h: false },
+            { rank: 31, name: "丛浅茶咖啡", address: "长平路与东方东街交叉口东北40米", hours: "24小时营业", distance: "12.3km", phone: "18823931688", is24h: true },
+            { rank: 32, name: "G'day Cafe(尚海阳光花园店)", address: "尚海阳光花园15栋102", hours: "08:00-01:30", distance: "12.4km", phone: "13502795074", is24h: false },
+            { rank: 33, name: "啡阁咖啡(菊园店)", address: "龙华街8号菊园35栋102号", hours: "13:00-24:00", distance: "12.4km", phone: "13380493460", is24h: false },
+            { rank: 34, name: "OpenY·Y服饰咖啡集合店", address: "菊园", hours: "12:00-24:00", distance: "12.4km", phone: "", is24h: false },
+            { rank: 35, name: "松松咖啡24小时(天澜国际店)", address: "嵩山路南20号天澜国际大厦南侧1楼整层", hours: "24小时营业", distance: "12.7km", phone: "13726502402", is24h: true },
+            { rank: 36, name: "幺幺咖啡(步行街店)", address: "华侨新村路步行街与金陵路交叉口东20米", hours: "11:00-02:00", distance: "12.8km", phone: "18933088266", is24h: false },
+            { rank: 37, name: "NOWWA挪瓦咖啡(天福汕头龙眼路店)", address: "龙眼路19号之3号铺面天福便利店", hours: "24小时营业", distance: "12.9km", phone: "18125137816", is24h: true },
+            { rank: 38, name: "MORY CAFE(龙光·御海尚品华府店)", address: "御海尚品华府1幢101", hours: "14:00-18:00 19:00-24:00", distance: "13.1km", phone: "13342747817", is24h: false },
+            { rank: 39, name: "红砖楼咖啡馆", address: "福平路85号", hours: "10:30-24:00", distance: "14.7km", phone: "13417048318", is24h: false },
+            { rank: 40, name: "虎鲸咖啡(濠江花园南区店)", address: "西墩路1号濠江花园三期第142号", hours: "14:00-24:00", distance: "20.9km", phone: "13580448742", is24h: false },
+            { rank: 41, name: "在江边·cafe·茶座·烤盘", address: "环岛路42号", hours: "14:00-24:00", distance: "22.7km", phone: "16676871993", is24h: false },
+            { rank: 42, name: "s2 coffee", address: "海博熙泰丽湖阁", hours: "10:30-01:00", distance: "23.2km", phone: "19988298741", is24h: false },
+            { rank: 43, name: "在路上咖啡馆·日咖夜酒", address: "南春路412号105铺面", hours: "09:00-02:00", distance: "23.5km", phone: "18807686590", is24h: false },
+            { rank: 44, name: "朝暮咖啡(海逸一号店)", address: "枫溪镇潮州大道南端海逸1号第56号商铺", hours: "08:00-24:00", distance: "23.9km", phone: "15219861868", is24h: false, region: "chaozhou" },
+            { rank: 45, name: "叁斤咖啡馆", address: "东兴街道28号", hours: "10:30-24:00", distance: "24.2km", phone: "15913007925", is24h: false, region: "chaozhou" },
+            { rank: 46, name: "自由咖啡馆(广场店)", address: "城西街道城新西路交委对面5号铺面", hours: "09:00-01:00", distance: "24.4km", phone: "13112510745", is24h: false, region: "chaozhou" },
+            { rank: 47, name: "rollin'coffee(西新西安全文明小区店)", address: "西新路西新西文明安全小区3巷2栋101", hours: "09:00-02:00", distance: "24.5km", phone: "15107688831", is24h: false, region: "chaozhou" },
+            { rank: 48, name: "灵栖咖啡", address: "城西街道绿茵路益源住宅楼18号(新泰街53号)", hours: "09:00-24:00", distance: "24.5km", phone: "18676859982", is24h: false, region: "chaozhou" },
+            { rank: 49, name: "福旺来咖啡烘焙店", address: "福安路锦江花园5号铺面", hours: "08:00-24:00", distance: "24.6km", phone: "15323555999", is24h: false, region: "chaozhou" },
+            { rank: 50, name: "STAR LATENT CAFE星啡隐咖", address: "卫星二路水晶西巷3号,4号铺面", hours: "09:00-02:00", distance: "24.8km", phone: "13534658218", is24h: false, region: "chaozhou" },
+            { rank: 51, name: "FUKI-GO福气咖啡(奎元店)", address: "奎元路粤海A区", hours: "07:30-24:00", distance: "24.7km", phone: "", is24h: false, region: "chaozhou" },
+            { rank: 52, name: "肯悦咖啡潮汕路店", address: "潮汕公路与安北路交界处东南角潮安卜峰莲花市场首层B1A-13店铺", hours: "06:00-02:00", distance: "24.9km", phone: "0768-5890019", is24h: false, region: "chaozhou" },
+            { rank: 53, name: "NOWWA挪瓦咖啡(天福潮州可乐园店)", address: "新桥西路412号雅乐园A幢首层1-2号", hours: "24小时营业", distance: "25.1km", phone: "15816179819", is24h: true, region: "chaozhou" },
+            { rank: 54, name: "CM COFFEE", address: "泰安路12号", hours: "10:00-02:00", distance: "25.3km", phone: "15815857791", is24h: false, region: "chaozhou" },
+            { rank: 55, name: "STAR LATENT CAFE星啡隐咖(枫溪店)", address: "新风路203号", hours: "08:30-24:00", distance: "25.3km", phone: "13534666797", is24h: false, region: "chaozhou" },
+            { rank: 56, name: "黑马·咖啡Black Horese Coffee", address: "凤新西路如意居A区37号铺面", hours: "09:00-24:00", distance: "25.8km", phone: "17676121517", is24h: false, region: "chaozhou" },
+            { rank: 57, name: "FUKI-GO福气咖啡实验室", address: "韩山师范学院潮州师范分院南门西70米", hours: "10:00-24:00", distance: "26.0km", phone: "18023922601", is24h: false, region: "chaozhou" },
+            { rank: 58, name: "杵臼山COFFEE&amp;ALCOHOL", address: "北园路喜悦公寓3号", hours: "10:00-02:00", distance: "26.0km", phone: "13332799258", is24h: false, region: "chaozhou" },
+            { rank: 59, name: "灯·coffee&amp;bar", address: "北关村北景路与北堤路防汛通道交界处(北关夜市后侧)A区首层1-2号铺面", hours: "15:00-04:00", distance: "26.1km", phone: "", is24h: false, region: "chaozhou" },
+            { rank: 60, name: "GLEN格兰台球咖啡威士忌吧·窑烤披萨", address: "凤新街道泰安路52号", hours: "12:00-02:30", distance: "26.2km", phone: "19107675361", is24h: false, region: "chaozhou" },
+            { rank: 61, name: "探花 COFFEE ·花艺美学空间", address: "永安路南32号", hours: "09:00-24:00", distance: "26.3km", phone: "15363366663", is24h: false, region: "chaozhou" },
+            { rank: 62, name: "苦苦·kuku cafe", address: "潮州大道安怡园H栋首层1号铺面", hours: "14:30-00:30", distance: "26.4km", phone: "13076663083", is24h: false, region: "chaozhou" },
+            { rank: 63, name: "纽北摩咖·North Berm GP Cafe咖啡店", address: "北堤路中段北关停车场c区出口", hours: "15:00-01:00", distance: "26.4km", phone: "17722211277", is24h: false, region: "chaozhou" },
+            { rank: 64, name: "绿榕北肯悦咖啡店", address: "绿榕北路542号", hours: "06:00-24:00", distance: "26.5km", phone: "", is24h: false, region: "chaozhou" },
+            { rank: 65, name: "韩兴咖啡", address: "银槐北路与新洋路交叉口西180米", hours: "11:30-24:00", distance: "27.5km", phone: "18938817245", is24h: false, region: "chaozhou" },
+            { rank: 66, name: "花野·sunset coffee(海滨路一线海景店)", address: "海滨路欣涛度假村入口处(祥云广场对面)", hours: "09:00-02:00", distance: "27.8km", phone: "13415170321", is24h: false, region: "chaozhou" },
+            { rank: 67, name: "睡不醒咖啡社(大壮茗苑公寓店)", address: "西环城路赤杜园大巷2号商铺之34号商铺", hours: "08:00-24:00", distance: "27.9km", phone: "13129636931", is24h: false, region: "chaozhou" },
+            { rank: 68, name: "胖小曼·东南亚茶饮咖啡(渔湖店)", address: "镇前街17号", hours: "11:00-24:00", distance: "34.4km", phone: "13060566212", is24h: false, region: "jieyang" },
+            { rank: 69, name: "πpaipai coffee·pub(派派咖啡)", address: "滨江路风情街春风里7号", hours: "10:00-01:00", distance: "36.1km", phone: "18923564571", is24h: false, region: "jieyang" },
+            { rank: 70, name: "MILLION咖啡鸡尾酒馆", address: "美南街道西森村新溪西一巷78号3栋一层", hours: "08:00-02:00", distance: "36.5km", phone: "19076200276", is24h: false, region: "jieyang" },
+            { rank: 71, name: "Coffeeparlor 咖啡客厅", address: "饶中路69号", hours: "12:00-02:00", distance: "36.8km", phone: "13138406011", is24h: false, region: "jieyang" },
+            { rank: 72, name: "I&amp;P COFFEE", address: "曲溪街道景泰花园", hours: "14:00-24:00", distance: "37.8km", phone: "13687475877", is24h: false, region: "jieyang" },
+            { rank: 73, name: "得闲咖啡", address: "天福东路与榕东路交叉口东北120米", hours: "07:30-24:00", distance: "37.9km", phone: "", is24h: false, region: "jieyang" },
+            { rank: 74, name: "宝德时代广场无意义咖啡店(宝德时代广场店)", address: "临江北路东以西东升路以北宝德电脑数码广场二期时代华府商铺77-1号", hours: "11:00-02:00", distance: "38.6km", phone: "13570343098", is24h: false, region: "jieyang" },
+            { rank: 75, name: "Tarffy Cafe塔啡(东星店)", address: "东星村谷贵路段路边", hours: "08:00-24:00", distance: "38.7km", phone: "18825133828", is24h: false, region: "jieyang" },
+            { rank: 76, name: "Not Coffee(进贤家园店)", address: "进贤门大道进贤家园9号铺", hours: "11:00-24:00", distance: "38.9km", phone: "13751656122", is24h: false, region: "jieyang" },
+            { rank: 77, name: "记得咖啡Remembercoffee", address: "新河路602号中兴名郡", hours: "10:00-24:00", distance: "39.2km", phone: "15775099955", is24h: false, region: "jieyang" },
+            { rank: 78, name: "一咖一柠·Coffee Lemon(揭阳店)", address: "上义村东湖明珠西北侧", hours: "10:00-24:00", distance: "39.6km", phone: "13128386344", is24h: false, region: "jieyang" },
+            { rank: 79, name: "胖小曼·东南亚茶饮咖啡(榕城店)", address: "同心路249号", hours: "11:00-24:00", distance: "40.0km", phone: "13060566212", is24h: false, region: "jieyang" },
+            { rank: 80, name: "往赴咖啡(江南店)", address: "同心路与临江南路交叉口南160米", hours: "07:30-24:00", distance: "40.2km", phone: "17605146875", is24h: false, region: "jieyang" },
+            { rank: 81, name: "路也·COFFEE", address: "黄岐山大道86号", hours: "14:00-02:00", distance: "40.5km", phone: "18948364941", is24h: false, region: "jieyang" },
+            { rank: 82, name: "时光工坊咖啡馆(仁港店)", address: "东山仁港路美食街中段16-17号", hours: "11:00-24:00", distance: "40.7km", phone: "0663-8608883", is24h: false, region: "jieyang" },
+            { rank: 83, name: "瑞幸咖啡(揭阳仁港店)", address: "东兴街道仁港社区仁港休闲美食街b栋1314号", hours: "10:00-24:00", distance: "40.8km", phone: "4000100100", is24h: false, region: "jieyang" },
+            { rank: 84, name: "往赴咖啡(骏景店)", address: "黄岐山大道骏景花园111号", hours: "07:30-24:00", distance: "40.9km", phone: "16626978421", is24h: false, region: "jieyang" },
+            { rank: 85, name: "朝暮Cafe&amp;Bar", address: "临江北路206号", hours: "09:00-18:00 20:00-02:00", distance: "41.6km", phone: "13640376959", is24h: false, region: "jieyang" },
+            { rank: 86, name: "瑞幸咖啡(揭阳卢前路店)", address: "金凤阳光花园北门旁", hours: "10:00-24:00", distance: "41.7km", phone: "4000100100", is24h: false, region: "jieyang" },
+            { rank: 87, name: "NOWWA挪瓦咖啡(易站榕城富榕大厦店)", address: "马牙路以西建阳路以南富榕大厦21-22号", hours: "24小时营业", distance: "42.2km", phone: "18902332904", is24h: true, region: "jieyang" },
+            { rank: 88, name: "Ocean ray咖啡(揭阳店)", address: "东兴街道玉埔新村B1栋南起01-03号OR咖啡店", hours: "09:30-24:00", distance: "42.3km", phone: "19068753215", is24h: false, region: "jieyang" },
+            { rank: 89, name: "好嘢咖啡饮品", address: "西关路中段岭顶工业区42号林江摄影隔壁", hours: "14:30-01:00", distance: "43.6km", phone: "", is24h: false, region: "jieyang" },
+            { rank: 90, name: "十里咖啡", address: "锡场镇综合市场十二横25号", hours: "12:30-24:00", distance: "44.6km", phone: "18026046593", is24h: false, region: "jieyang" },
+            { rank: 91, name: "LanHaiTun coffee日咖夜酒", address: "揭阳市揭东区十亩湖路博和城1125号", hours: "08:30-02:30", distance: "45.4km", phone: "15915615079", is24h: false, region: "jieyang" },
+            { rank: 92, name: "啡常(coffee&amp;料理)", address: "磐东街道乔南村啡常(咖啡&amp;料理)", hours: "10:00-24:00", distance: "44.7km", phone: "18948380681", is24h: false, region: "jieyang" },
+            { rank: 93, name: "胖小曼·东南亚茶饮咖啡(乔南店)", address: "磐东街道乔南村博和城1213号", hours: "11:00-24:00", distance: "45.4km", phone: "15218677766", is24h: false, region: "jieyang" },
+        ];
+
+        let currentFilter = 'all';
+        let lastDrawIndex = -1;
+        let lastDrawTime = 0; // 上次抽取的时间戳，用于店级冷却
+        const COOLDOWN_MS = 60 * 1000; // 抽中的店1分钟内不再出现
+        let isDrawing = false;
+
+        // 从 localStorage 读取上次抽取记录
+        function loadLastDraw() {
+            const saved = localStorage.getItem('lateNightLastDraw');
+            if (saved) {
+                const data = JSON.parse(saved);
+                lastDrawIndex = data.index;
+                const cafe = cafes[lastDrawIndex];
+                document.getElementById('lastDraw').textContent = `上次抽到：TOP${cafe.rank} ${cafe.name}`;
+            }
+        }
+
+        // 保存抽取记录到 localStorage
+        function saveLastDraw(index) {
+            lastDrawIndex = index;
+            lastDrawTime = Date.now();
+            localStorage.setItem('lateNightLastDraw', JSON.stringify({
+                index: index,
+                time: new Date().toISOString()
+            }));
+            const cafe = cafes[index];
+            document.getElementById('lastDraw').textContent = `上次抽到：TOP${cafe.rank} ${cafe.name}`;
+        }
+
+        // 随机抽取（防重复）
+        function drawRandom() {
+            if (isDrawing) return;
+            isDrawing = true;
+
+            const btn = document.getElementById('drawBtn');
+            const resultCard = document.getElementById('resultCard');
+
+            btn.disabled = true;
+            btn.classList.add('spinning');
+            btn.textContent = '🎲 抽取中...';
+            resultCard.classList.remove('show');
+
+            // 模拟滚动效果
+            let rollCount = 0;
+            const maxRolls = 15;
+            const rollInterval = setInterval(() => {
+                const randomIdx = Math.floor(Math.random() * cafes.length);
+                const cafe = cafes[randomIdx];
+                btn.textContent = `🎲 ${cafe.name.substring(0, 8)}...`;
+                rollCount++;
+
+                if (rollCount >= maxRolls) {
+                    clearInterval(rollInterval);
+                    finalizeDraw();
+                }
+            }, 100);
+        }
+
+        // 最终抽取结果
+        function finalizeDraw() {
+            // 防重复逻辑：排除还在冷却期的店
+            const now = Date.now();
+            let availableIndices = [];
+            for (let i = 0; i < cafes.length; i++) {
+                // 上次抽到的店在1分钟内不再出现
+                if (i === lastDrawIndex && (now - lastDrawTime) < COOLDOWN_MS) {
+                    continue;
+                }
+                availableIndices.push(i);
+            }
+
+            // 如果只剩一家（理论上不会发生），就用全部
+            if (availableIndices.length === 0) {
+                availableIndices = cafes.map((_, i) => i);
+            }
+
+            // 从可用列表中随机选择
+            const randomPos = Math.floor(Math.random() * availableIndices.length);
+            const selectedIndex = availableIndices[randomPos];
+            const cafe = cafes[selectedIndex];
+
+            // 保存记录
+            saveLastDraw(selectedIndex);
+
+            // 显示结果
+            document.getElementById('resultRank').textContent = `TOP ${cafe.rank}`;
+            document.getElementById('resultName').innerHTML = cafe.name + (cafe.is24h ? ' <span class="tag-small">24小时</span>' : '');
+            document.getElementById('resultAddress').textContent = '📍 ' + cafe.address;
+            document.getElementById('resultHours').textContent = '🕐 ' + cafe.hours;
+            document.getElementById('resultDistance').textContent = cafe.distance;
+            document.getElementById('resultPhone').textContent = cafe.phone ? '📞 ' + cafe.phone : '';
+
+            const btn = document.getElementById('drawBtn');
+            btn.disabled = false;
+            btn.classList.remove('spinning');
+            btn.textContent = '🎲 再抽一家';
+
+            // 显示导航按钮
+            document.getElementById('naviBtn').style.display = 'inline-block';
+
+            document.getElementById('resultCard').classList.add('show');
+
+            // 记录当前抽中的索引，但不自动滚动
+            window.currentDrawIndex = selectedIndex;
+
+            isDrawing = false;
+        }
+
+        // 导航按钮默认隐藏
+        document.getElementById('naviBtn').style.display = 'none';
+
+        // 导航到店铺（打开手机高德地图）
+        function navigateToCafe() {
+            const nameEl = document.getElementById('resultName');
+            if (!nameEl) return;
+            const cafeName = nameEl.textContent.replace(/\s*<[^>]+>/g, '').trim();
+
+            // 高德地图 URL Scheme
+            const androidUrl = `androidamap://navi?sourceApplication=coffee-wheel&keyword=${encodeURIComponent(cafeName)}&style=d`;
+            const iosUrl = `iosamap://navi?sourceApplication=coffee-wheel&query=${encodeURIComponent(cafeName)}&style=d`;
+            const webUrl = `https://uri.amap.com/navigation?to=auto,auto&name=${encodeURIComponent(cafeName)}&callnative=1`;
+
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isMobile = /android|iphone|ipad|ipod|windows phone/.test(userAgent);
+
+            if (isMobile) {
+                const appUrl = /android/.test(userAgent) ? androidUrl : iosUrl;
+                const timer = setTimeout(() => { window.location.href = webUrl; }, 1000);
+                window.location.href = appUrl;
+            } else {
+                window.open(webUrl, '_blank');
+            }
+        }
+
+        // 点击按钮后滚动到抽中的店
+        function scrollToResult() {
+            if (window.currentDrawIndex === undefined) return;
+
+            // 先清除所有高亮
+            document.querySelectorAll('.coffee-item').forEach(item => {
+                item.classList.remove('highlight');
+            });
+
+            // 高亮当前抽中的店
+            const item = document.getElementById('cafe-item-' + window.currentDrawIndex);
+            if (item) {
+                item.classList.add('highlight');
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        // 渲染列表
+        function renderList(filter = 'all') {
+            const listEl = document.getElementById('coffeeList');
+            let filtered = cafes;
+
+            if (filter === '24h') {
+                filtered = cafes.filter(c => c.is24h);
+            } else if (filter === 'near') {
+                filtered = cafes.filter(c => parseFloat(c.distance) <= 5);
+            } else if (filter === 'chaozhou') {
+                filtered = cafes.filter(c => c.region === 'chaozhou');
+            } else if (filter === 'jieyang') {
+                filtered = cafes.filter(c => c.region === 'jieyang');
+            }
+
+            listEl.innerHTML = filtered.map((cafe, idx) => {
+                const originalIndex = cafes.indexOf(cafe);
+                const rankClass = cafe.rank <= 3 ? 'top3' : (cafe.rank <= 10 ? 'top10' : '');
+                return `
+                    <div class="coffee-item" id="cafe-item-${originalIndex}">
+                        <div class="coffee-header">
+                            <span class="coffee-rank ${rankClass}">${cafe.rank}</span>
+                            <span class="coffee-name">${cafe.name}${cafe.is24h ? '<span class="tag-small">24小时</span>' : ''}</span>
+                            <span class="coffee-distance">${cafe.distance}</span>
+                        </div>
+                        <div class="coffee-address">${cafe.address}</div>
+                        <div class="coffee-hours">🕐 ${cafe.hours}</div>
+                        ${cafe.phone ? `<div class="coffee-phone">📞 ${cafe.phone}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 筛选列表
+        function filterList(type) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderList(type);
+        }
+
+        // 初始化
+        loadLastDraw();
+        renderList();
+    </script>
+</body>
+</html>
